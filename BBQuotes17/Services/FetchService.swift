@@ -10,11 +10,11 @@ import Foundation
 
 struct FetchService {
 
-    enum FetchError: Error {
+    private enum FetchError: Error {
         case badResponse
     }  // enum FetchError
     
-    let baseURL = URL(string: "https://breaking-bad-api-six.vercel.app/api")!
+    private let baseURL = URL(string: "https://breaking-bad-api-six.vercel.app/api")!
     
     // URL = https://breaking-bad-api-six.vercel.app/api/quotes/random?production=Breaking+Bad
     
@@ -48,7 +48,7 @@ struct FetchService {
         
         let (data, response) = try await URLSession.shared.data(from: fetchURL)
         
-        guard let response = response as HTTPURLResponse, response.statusCode == 200 else {
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw FetchError.badResponse
         }  // guard let
         
@@ -85,6 +85,28 @@ struct FetchService {
         return nil
         
     }  // fetchDeath
+    
+    
+    func fetchEpisode(from show: String) async throws -> Episode? {
+        let episodeURL = baseURL.appending(path: "episodes")
+        let fetchURL = episodeURL.appending(queryItems: [URLQueryItem(name: "production", value: show)])
+        
+        let (data, response) = try await URLSession.shared.data(from: fetchURL)
+        
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            throw FetchError.badResponse
+        }  // guard let
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+                
+        let episodes = try decoder.decode([Episode].self, from: data)
+        
+        return episodes.randomElement()
+        
+    }  // func fetchEpisode
+    
+    
     
     
 }  // struct FetchService

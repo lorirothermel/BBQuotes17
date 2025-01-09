@@ -6,3 +6,14 @@
 //
 
 import Foundation
+
+extension String {
+    func removeSpaces() -> String {
+        self.replacingOccurrences(of: " ", with: "")
+    }  // func removeSpaces
+    
+    func removeCaseAndSpace() -> String {
+        self.removeSpaces().lowercased()
+    }
+    
+}  // extension String

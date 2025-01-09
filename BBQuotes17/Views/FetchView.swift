@@ -31,7 +31,7 @@ struct FetchView: View {
                             EmptyView()
                         case .fetching:
                             ProgressView()
-                        case .success:
+                        case .successQuote:
                             Text("\"\(vm.quote.quote)\"")
                                 .minimumScaleFactor(0.5)
                                 .multilineTextAlignment(.center)
@@ -66,31 +66,56 @@ struct FetchView: View {
                             .sheet(isPresented: $showCharacerInfo) {
                                 CharacterView(character: vm.character, show: show)
                             }  // .sheet
-                            
+                        
+                        case .successEpisode:
+                            EpisodeView(episode: vm.episode)
+                                                        
                         case .failed(let error):
                             Text(error.localizedDescription)
+                            
                         }  // switch
                         
-                        Spacer()
+                        Spacer(minLength: 20)
                         
                     }  // VStack
                     
-                    Button {
-                        Task {
-                            await vm.getQuoteData(for: show)
-                        }  // Task
-                    } label: {
-                        Text("Get Random Quote")
-                            .font(.title)
-                            .foregroundStyle(.white)
-                            .padding()
-//                          .background(Color("\(show.replacingOccurrences(of: " ", with: ""))Button"))
-                            .background(Color("\(show.removeSpaces())Button"))
-                            .clipShape(.rect(cornerRadius: 7))
-                            .shadow(color: Color("\(show.removeSpaces())Shadow"), radius: 2)
+                    HStack {
+                        Button {
+                            Task {
+                                await vm.getQuoteData(for: show)
+                            }  // Task
+                        } label: {
+                            Text("Get Random Quote")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .padding()
+                            //                          .background(Color("\(show.replacingOccurrences(of: " ", with: ""))Button"))
+                                .background(Color("\(show.removeSpaces())Button"))
+                                .clipShape(.rect(cornerRadius: 7))
+                                .shadow(color: Color("\(show.removeSpaces())Shadow"), radius: 2)
+                            
+                        }  // Button
                         
-                    }  // Button
-                    
+                        Spacer()
+                        
+                        Button {
+                            Task {
+                                await vm.getEpisode(for: show)
+                            }  // Task
+                        } label: {
+                            Text("Get Random Episode")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .padding()
+//                              .background(Color("\(show.replacingOccurrences(of: " ", with: ""))Button"))
+                                .background(Color("\(show.removeSpaces())Button"))
+                                .clipShape(.rect(cornerRadius: 7))
+                                .shadow(color: Color("\(show.removeSpaces())Shadow"), radius: 2)
+                            
+                        }  // Button
+                        
+                    }  // HStack
+                    .padding(.horizontal, 30)
                     Spacer(minLength: 95)
                     
                 }  // VStack
